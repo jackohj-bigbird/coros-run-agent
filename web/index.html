@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Run Agent Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=Space+Grotesk:wght@500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="bg-shape bg-shape-1"></div>
+    <div class="bg-shape bg-shape-2"></div>
+
+    <main class="page">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">COROS PACE 3 + Strava</p>
+          <h1>Run Agent 控制台</h1>
+          <p class="subtitle">目标：半马 1:40 ｜ 比赛日：2026-05-01 ｜ 固定训练日：周二/周四/周六/周日</p>
+        </div>
+        <div class="quick-actions">
+          <button id="btn-refresh" class="btn btn-primary">刷新全部</button>
+          <button id="btn-sync" class="btn">同步 Strava</button>
+        </div>
+      </section>
+
+      <section class="panel settings-panel reveal">
+        <h2>连接设置</h2>
+        <div class="form-grid">
+          <label>
+            后端 API 地址
+            <input id="api-base" type="text" placeholder="https://your-backend.example.com" />
+          </label>
+          <label>
+            说明
+            <input type="text" value="Netlify 页面通过这个地址调用 FastAPI" disabled />
+          </label>
+        </div>
+        <div class="row-actions">
+          <button id="btn-save-api" class="btn">保存地址</button>
+          <span id="api-status" class="hint"></span>
+        </div>
+      </section>
+
+      <section class="summary reveal">
+        <article class="metric-card">
+          <p>本周跑步次数</p>
+          <h3 id="m-run-count">-</h3>
+        </article>
+        <article class="metric-card">
+          <p>本周总里程</p>
+          <h3 id="m-distance">-</h3>
+        </article>
+        <article class="metric-card">
+          <p>本周平均配速</p>
+          <h3 id="m-pace">-</h3>
+        </article>
+        <article class="metric-card">
+          <p>计划完成率</p>
+          <h3 id="m-completion">-</h3>
+        </article>
+      </section>
+
+      <section class="grid reveal">
+        <article class="panel">
+          <div class="panel-head">
+            <h2>最近跑步</h2>
+            <button id="btn-recent" class="btn btn-small">刷新</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>名称</th>
+                  <th>距离</th>
+                  <th>配速</th>
+                </tr>
+              </thead>
+              <tbody id="recent-body"></tbody>
+            </table>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <h2>训练计划（30条）</h2>
+            <button id="btn-plan" class="btn btn-small">刷新</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>日期</th>
+                  <th>类型</th>
+                  <th>距离</th>
+                  <th>目标配速</th>
+                </tr>
+              </thead>
+              <tbody id="plan-body"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel reveal">
+        <div class="panel-head">
+          <h2>重建训练计划</h2>
+        </div>
+        <div class="form-grid">
+          <label>
+            开始日期
+            <input id="plan-start" type="date" value="2026-02-22" />
+          </label>
+          <label>
+            比赛日期
+            <input id="plan-race" type="date" value="2026-05-01" />
+          </label>
+          <label>
+            目标时间（分钟）
+            <input id="plan-target" type="number" min="80" max="180" value="100" />
+          </label>
+        </div>
+        <div class="row-actions">
+          <button id="btn-plan-setup" class="btn">生成计划</button>
+          <span id="plan-status" class="hint"></span>
+        </div>
+      </section>
+
+      <section class="panel reveal">
+        <div class="panel-head">
+          <h2>教练对话</h2>
+          <button id="btn-chat-clear" class="btn btn-small">清空</button>
+        </div>
+        <div id="chat-box" class="chat-box"></div>
+        <div class="chat-input">
+          <input id="chat-input" type="text" placeholder="例如：我这周状态怎么样，下次跑什么？" />
+          <button id="btn-chat" class="btn btn-primary">发送</button>
+        </div>
+      </section>
+
+      <p id="toast" class="toast" aria-live="polite"></p>
+    </main>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>
