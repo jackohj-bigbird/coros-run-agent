@@ -1,5 +1,4 @@
-from datetime import datetime
-from typing import Optional
+from datetime import date, datetime
 
 from sqlalchemy import Date, DateTime, Float, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
@@ -20,9 +19,9 @@ class Activity(Base):
     moving_time_s: Mapped[int] = mapped_column(Integer, nullable=False)
     elapsed_time_s: Mapped[int] = mapped_column(Integer, nullable=False)
     total_elevation_gain_m: Mapped[float] = mapped_column(Float, nullable=False)
-    average_heartrate: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
-    max_heartrate: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
-    average_speed_mps: Mapped[Optional[float]] = mapped_column(Float, nullable=True)
+    average_heartrate: Mapped[float] = mapped_column(Float, nullable=True)
+    max_heartrate: Mapped[float] = mapped_column(Float, nullable=True)
+    average_speed_mps: Mapped[float] = mapped_column(Float, nullable=True)
     raw_json: Mapped[str] = mapped_column(Text, nullable=False)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
 
@@ -31,7 +30,7 @@ class TrainingPlanItem(Base):
     __tablename__ = "training_plan_items"
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    plan_date: Mapped[Date] = mapped_column(Date, nullable=False)
+    plan_date: Mapped[date] = mapped_column(Date, nullable=False)
     weekday: Mapped[str] = mapped_column(String(20), nullable=False)
     session_type: Mapped[str] = mapped_column(String(50), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
@@ -46,7 +45,7 @@ class ReminderLog(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     reminder_type: Mapped[str] = mapped_column(String(50), nullable=False)
-    target_date: Mapped[Date] = mapped_column(Date, nullable=False)
+    target_date: Mapped[date] = mapped_column(Date, nullable=False)
     sent_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.utcnow, nullable=False)
     channel: Mapped[str] = mapped_column(String(50), nullable=False)
     subject: Mapped[str] = mapped_column(String(255), nullable=False)
