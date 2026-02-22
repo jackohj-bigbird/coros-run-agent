@@ -8,7 +8,17 @@ class Base(DeclarativeBase):
     pass
 
 
-engine = create_engine(settings.database_url, future=True)
+def _normalize_database_url(raw_url: str) -> str:
+    # Render may provide postgres:// URLs; SQLAlchemy expects postgresql://.
+    if raw_url.startswith("postgres://"):
+        return raw_url.replace("postgres://", "postgresql+psycopg2://", 1)
+    if raw_url.startswith("postgresql://"):
+        return raw_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+    return raw_url
+
+
+database_url = _normalize_database_url(settings.database_url)
+engine = create_engine(database_url, future=True, pool_pre_ping=True)
 SessionLocal = sessionmaker(bind=engine, autoflush=False, autocommit=False, future=True)
 
 
