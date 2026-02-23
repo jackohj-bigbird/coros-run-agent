@@ -20,9 +20,7 @@ services:
       - key: CORS_ORIGINS
         value: https://jovial-meringue-21dbdf.netlify.app
       - key: DATABASE_URL
-        fromDatabase:
-          name: coros-run-agent-db
-          property: connectionString
+        sync: false
       - key: STRAVA_CLIENT_ID
         sync: false
       - key: STRAVA_CLIENT_SECRET
