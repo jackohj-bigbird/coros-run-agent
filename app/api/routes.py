@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.core.database import Base, engine, get_db
+from app.core.database import get_db
 from app.core.models import Activity, TrainingPlanItem
 from app.services.analysis import build_weekly_summary, format_pace
 from app.services.chat_agent import ChatAgent
@@ -43,7 +43,6 @@ class StravaWebhookEvent(BaseModel):
 
 @router.get("/health")
 def health() -> dict[str, str]:
-    Base.metadata.create_all(bind=engine)
     return {"status": "ok"}
 
 

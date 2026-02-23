@@ -41,6 +41,7 @@ cp .env.example .env
 - `STRAVA_WEBHOOK_VERIFY_TOKEN`（用于 Strava 回调校验）
 - `STRAVA_WEBHOOK_CALLBACK_URL`（公网可访问地址，例如 `https://xxx.ngrok-free.app/webhook/strava`）
 - `CORS_ORIGINS`（前端域名白名单，多个用逗号分隔；本地开发可先用 `*`）
+- `ENABLE_SCHEDULER`（是否启用内置定时任务，Render free 建议 `false`）
 
 ### Strava 权限注意
 如果你发现同步报 `401 Unauthorized`，通常是 token scope 只有 `read`，缺少活动读取权限。  

@@ -19,7 +19,11 @@ class SchedulerService:
         self.mailer = EmailReminderService()
 
     def start(self) -> None:
-        Base.metadata.create_all(bind=engine)
+        try:
+            Base.metadata.create_all(bind=engine)
+        except Exception:
+            # Avoid crashing whole API startup on transient DB/network issues.
+            return
 
         # Daily sync at 06:10 local time.
         self.scheduler.add_job(self.sync_activities_job, "cron", hour=6, minute=10, id="sync_activities")

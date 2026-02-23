@@ -27,9 +27,11 @@ scheduler_service = SchedulerService()
 
 @app.on_event("startup")
 def on_startup() -> None:
-    scheduler_service.start()
+    if settings.enable_scheduler:
+        scheduler_service.start()
 
 
 @app.on_event("shutdown")
 def on_shutdown() -> None:
-    scheduler_service.stop()
+    if settings.enable_scheduler:
+        scheduler_service.stop()

@@ -10,6 +10,7 @@ class Settings(BaseSettings):
     app_port: int = Field(default=8000, alias="APP_PORT")
     timezone: str = Field(default="Asia/Shanghai", alias="TIMEZONE")
     cors_origins: str = Field(default="*", alias="CORS_ORIGINS")
+    enable_scheduler: bool = Field(default=True, alias="ENABLE_SCHEDULER")
 
     database_url: str = Field(default="sqlite:///./running_agent.db", alias="DATABASE_URL")
 
