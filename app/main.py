@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.routes import router
 from app.core.config import settings
+from app.core.database import Base, engine
 from app.scheduler import SchedulerService
 
 app = FastAPI(title="COROS Running Agent", version="0.1.0")
@@ -27,6 +28,11 @@ scheduler_service = SchedulerService()
 
 @app.on_event("startup")
 def on_startup() -> None:
+    try:
+        Base.metadata.create_all(bind=engine)
+    except Exception:
+        # Keep API alive even if DB is temporarily unavailable during boot.
+        pass
     if settings.enable_scheduler:
         scheduler_service.start()
 
