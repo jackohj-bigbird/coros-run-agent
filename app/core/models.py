@@ -1,6 +1,6 @@
 from datetime import date, datetime
 
-from sqlalchemy import Date, DateTime, Float, Integer, String, Text, UniqueConstraint
+from sqlalchemy import BigInteger, Date, DateTime, Float, Integer, String, Text, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.database import Base
@@ -11,7 +11,8 @@ class Activity(Base):
     __table_args__ = (UniqueConstraint("strava_activity_id", name="uq_strava_activity_id"),)
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
-    strava_activity_id: Mapped[int] = mapped_column(Integer, nullable=False)
+    # Strava activity IDs can exceed 32-bit integer range.
+    strava_activity_id: Mapped[int] = mapped_column(BigInteger, nullable=False)
     name: Mapped[str] = mapped_column(String(255), nullable=False)
     activity_type: Mapped[str] = mapped_column(String(50), nullable=False)
     start_date: Mapped[datetime] = mapped_column(DateTime, nullable=False)

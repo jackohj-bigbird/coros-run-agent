@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from app.api.routes import router
 from app.core.config import settings
@@ -30,6 +31,15 @@ scheduler_service = SchedulerService()
 def on_startup() -> None:
     try:
         Base.metadata.create_all(bind=engine)
+        # Backward-compatible schema fix for existing Postgres tables.
+        if engine.dialect.name.startswith("postgresql"):
+            with engine.begin() as conn:
+                conn.execute(
+                    text(
+                        "ALTER TABLE IF EXISTS activities "
+                        "ALTER COLUMN strava_activity_id TYPE BIGINT"
+                    )
+                )
     except Exception:
         # Keep API alive even if DB is temporarily unavailable during boot.
         pass
