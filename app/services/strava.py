@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
 
 import requests
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -20,6 +20,7 @@ class StravaService:
         self.client_id = settings.strava_client_id
         self.client_secret = settings.strava_client_secret
         self.refresh_token = settings.strava_refresh_token
+        self._activity_id_bigint_checked = False
 
     def is_configured(self) -> bool:
         return bool(self.client_id and self.client_secret and self.refresh_token)
@@ -106,6 +107,7 @@ class StravaService:
         return {"deleted_id": subscription_id}
 
     def upsert_run_activities(self, db: Session, activities: list[dict[str, Any]]) -> int:
+        self._ensure_activity_id_bigint(db)
         inserted = 0
         for item in activities:
             if item.get("type") != "Run":
@@ -137,3 +139,22 @@ class StravaService:
         if inserted:
             db.commit()
         return inserted
+
+    def _ensure_activity_id_bigint(self, db: Session) -> None:
+        if self._activity_id_bigint_checked:
+            return
+
+        bind = db.get_bind()
+        if not bind.dialect.name.startswith("postgresql"):
+            self._activity_id_bigint_checked = True
+            return
+
+        with bind.begin() as conn:
+            conn.execute(
+                text(
+                    "ALTER TABLE IF EXISTS activities "
+                    "ALTER COLUMN strava_activity_id TYPE BIGINT "
+                    "USING strava_activity_id::BIGINT"
+                )
+            )
+        self._activity_id_bigint_checked = True
